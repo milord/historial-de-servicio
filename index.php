@@ -1,7 +1,18 @@
 <?php
+session_start();
+
 $message = '';
+$dates = isset($_SESSION['dates']) ? $_SESSION['dates'] : array();
+$totalYears = $totalMonths = $totalDays = 0;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['reset'])) {
+        // The reset button was clicked
+        session_unset();
+        header("Refresh:0");
+        exit();
+    }
+
     $date1 = $_POST['date1'];
     $date2 = $_POST['date2'];
 
@@ -11,7 +22,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($datetime1 && $datetime1->format('Y-m-d') === $date1 && $datetime2 && $datetime2->format('Y-m-d') === $date2) {
         $result = dateDifference($date1, $date2);
-        $message = "The difference between the two dates is: " . $result;
+        $dates[] = array('date1' => $date1, 'date2' => $date2, 'difference' => $result);
+        $_SESSION['dates'] = $dates;
+
+        // Extract the years, months, and days from the date difference and add them to the total
+        list($years, $months, $days) = sscanf($result, '%d years, %d months, %d days');
+        $totalYears += $years;
+        $totalMonths += $months;
+        $totalDays += $days;
     } else {
         $message = "Invalid date format. Please enter dates in the format 'YYYY-MM-DD'.";
     }
@@ -22,6 +40,7 @@ function dateDifference($date1, $date2) {
     $datetime2 = new DateTime($date2);
     $interval = $datetime1->diff($datetime2);
     return sprintf('%d years, %d months, %d days', $interval->y, $interval->m, $interval->d);
+
 }
 ?>
 
@@ -31,6 +50,17 @@ function dateDifference($date1, $date2) {
     <label for="date2">Date 2:</label><br>
     <input type="date" id="date2" name="date2"><br>
     <input type="submit" value="Submit">
+    <input type="submit" name="reset" value="Reset">
 </form>
 
 <p><?php echo $message; ?></p>
+
+<?php
+$index = 1;
+foreach ($dates as $date) {
+    echo sprintf("%d. The difference between %s and %s is: %s<br>", $index, $date['date1'], $date['date2'], $date['difference']);
+    $index++;
+}
+// Display the total years, months, and days
+    echo sprintf("The total sum of differences is: %d years, %d months, %d days", $totalYears, $totalMonths, $totalDays);
+?>
