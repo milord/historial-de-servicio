@@ -3,7 +3,9 @@ session_start();
 
 $message = '';
 $dates = isset($_SESSION['dates']) ? $_SESSION['dates'] : array();
-$totalYears = $totalMonths = $totalDays = 0;
+$totalYears = isset($_SESSION['totalYears']) ? $_SESSION['totalYears'] : 0;
+$totalMonths = isset($_SESSION['totalMonths']) ? $_SESSION['totalMonths'] : 0;
+$totalDays = isset($_SESSION['totalDays']) ? $_SESSION['totalDays'] : 0;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['reset'])) {
@@ -30,6 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $totalYears += $years;
         $totalMonths += $months;
         $totalDays += $days;
+
+        // Store the total years, months, and days in the session
+        $_SESSION['totalYears'] = $totalYears;
+        $_SESSION['totalMonths'] = $totalMonths;
+        $_SESSION['totalDays'] = $totalDays;
     } else {
         $message = "Invalid date format. Please enter dates in the format 'YYYY-MM-DD'.";
     }
@@ -61,6 +68,6 @@ foreach ($dates as $date) {
     echo sprintf("%d. The difference between %s and %s is: %s<br>", $index, $date['date1'], $date['date2'], $date['difference']);
     $index++;
 }
-// Display the total years, months, and days
-    echo sprintf("The total sum of differences is: %d years, %d months, %d days", $totalYears, $totalMonths, $totalDays);
+// Display the total sum of date differences
+echo sprintf("The total sum of differences is: %d years, %d months, %d days", $totalYears, $totalMonths, $totalDays);
 ?>
