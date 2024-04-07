@@ -46,7 +46,7 @@ function dateDifference($date1, $date2) {
     $datetime1 = new DateTime($date1);
     $datetime2 = new DateTime($date2);
     $interval = $datetime1->diff($datetime2);
-    return sprintf('%d years, %d months, %d days', $interval->y, $interval->m, $interval->d);
+    return sprintf('%d años, %d meses, %d días', $interval->y, $interval->m, $interval->d);
 
 }
 ?>
