@@ -8,7 +8,7 @@
 <body>
 
 <header>
-    <h3>Acumulado de días, meses y años para el personal de DGETI</h3>
+    <h3>Acumulado de días, meses y años para el personal de la DGETI</h3>
 </header>
 
 <div class="container">
@@ -31,15 +31,25 @@
         
         echo "<div class='flex-container'>";
         echo "<div class='flex-row header'>
-                <div>Caso No.</div>
+                <div>No.</div>
                 <div>Inicio</div>
                 <div>Término</div>
                 <div>Cómputo</div>
             </div>";
         foreach ($dates as $date) {
-            echo sprintf("<div class='flex-row'><div>%d</div><div>%s</div><div>%s</div><div>%s</div></div>", $index, $date['date1'], $date['date2'], $date['difference']);
+            $date1 = DateTime::createFromFormat('Y-m-d', $date['date1'])->format('d/m/Y');
+            $date2 = DateTime::createFromFormat('Y-m-d', $date['date2'])->format('d/m/Y');
+            
+            echo sprintf("
+                <div class='flex-row'>
+                    <div>%d.</div>
+                    <div>%s</div>
+                    <div>%s</div>
+                    <div>%s</div>
+                </div>", $index, $date1, $date2, $date['difference']);
+            
             $index++;
-        }
+        }        
         echo "</div>";
 
         // Display the total sum of date differences

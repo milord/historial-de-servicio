@@ -1,5 +1,10 @@
+header {
+    text-align: center;
+}
+
 header h3 {
     color: #ffffff; /* Change this to your preferred color */
+   
 }
 
 body {
