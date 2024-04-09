@@ -21,6 +21,11 @@
             <input type="submit" value="Calcular">
             <input type="submit" name="reset" value="Reiniciar">
         </form>
+
+        <?php
+        // Display the total sum of date differences
+        echo sprintf("<span class='total-difference'>Cómputo: %d años, %d meses, %d días</span>", $totalYears, $totalMonths, $totalDays);
+        ?>
     </div>
 
     <div class="section">
@@ -31,10 +36,10 @@
         
         echo "<div class='flex-container'>";
         echo "<div class='flex-row header'>
-                <div>No.</div>
+                <div></div>
                 <div>Inicio</div>
                 <div>Término</div>
-                <div>Cómputo</div>
+                <div>Cómputo </div>
             </div>";
         foreach ($dates as $date) {
             $date1 = DateTime::createFromFormat('Y-m-d', $date['date1'])->format('d/m/Y');
@@ -52,8 +57,6 @@
         }        
         echo "</div>";
 
-        // Display the total sum of date differences
-        echo sprintf("<span class='total-difference'>Cómputo: %d años, %d meses, %d días</span>", $totalYears, $totalMonths, $totalDays);
         ?>
     </div>
 </div>
