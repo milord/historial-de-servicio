@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+require 'vendor/autoload.php';
+
+use Carbon\Carbon;
+
 $message = '';
 $dates = isset($_SESSION['dates']) ? $_SESSION['dates'] : array();
 $totalYears = isset($_SESSION['totalYears']) ? $_SESSION['totalYears'] : 0;
@@ -19,8 +23,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $date2 = $_POST['date2'];
 
     // Validate the dates
-    $datetime1 = DateTime::createFromFormat('Y-m-d', $date1);
-    $datetime2 = DateTime::createFromFormat('Y-m-d', $date2);
+    $datetime1 = Carbon::createFromFormat('Y-m-d', $date1);
+    $datetime2 = Carbon::createFromFormat('Y-m-d', $date2);
 
     if ($datetime1 && $datetime1->format('Y-m-d') === $date1 && $datetime2 && $datetime2->format('Y-m-d') === $date2) {
         $result = dateDifference($date1, $date2);
