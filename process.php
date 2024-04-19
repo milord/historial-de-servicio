@@ -4,6 +4,7 @@ session_start();
 require 'vendor/autoload.php';
 
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 
 $message = '';
 $dates = isset($_SESSION['dates']) ? $_SESSION['dates'] : array();
@@ -12,24 +13,31 @@ $totalMonths = isset($_SESSION['totalMonths']) ? $_SESSION['totalMonths'] : 0;
 $totalDays = isset($_SESSION['totalDays']) ? $_SESSION['totalDays'] : 0;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['reset'])) {
-        // The reset button was clicked
-        session_unset();
-        header("Refresh:0");
+    if (isset($_POST['delete_index'])) {
+        // The delete button was clicked
+        $index = $_POST['delete_index'];
+        unset($_SESSION['dates'][$index]);
+        header("Location: index.php");
         exit();
     }
 
-    $date1 = $_POST['date1'];
-    $date2 = $_POST['date2'];
+    // Retrieve the dates from the POST data
+    $date1String = $_POST['date1'];
+    $date2String = $_POST['date2'];
 
-    // Validate the dates
-    $datetime1 = Carbon::createFromFormat('Y-m-d', $date1);
-    $datetime2 = Carbon::createFromFormat('Y-m-d', $date2);
+    // Create DateTime objects from the date strings
+    $datetime1 = new DateTime($date1String);
+    $datetime2 = new DateTime($date2String);
 
-    if ($datetime1 && $datetime1->format('Y-m-d') === $date1 && $datetime2 && $datetime2->format('Y-m-d') === $date2) {
-        $result = dateDifference($date1, $date2);
-        $dates[] = array('date1' => $date1, 'date2' => $date2, 'difference' => $result);
-        $_SESSION['dates'] = $dates;
+    // Check if the dates are valid
+    if ($datetime1 && $datetime1->format('Y-m-d') === $date1String && $datetime2 && $datetime2->format('Y-m-d') === $date2String) {
+        // The dates are valid
+        $date1 = Carbon::parse($date1String);
+        $date2 = Carbon::parse($date2String);
+        $interval = $date1->diff($date2);
+
+        // Format the interval as "X years, Y months, Z days"
+        $result = sprintf('%d years, %d months, %d days', $interval->y, $interval->m, $interval->d);
 
         // Extract the years, months, and days from the date difference and add them to the total
         list($years, $months, $days) = sscanf($result, '%d years, %d months, %d days');
@@ -37,22 +45,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $totalMonths += $months;
         $totalDays += $days;
 
-        // Store the total years, months, and days in the session
-        $_SESSION['totalYears'] = $totalYears;
-        $_SESSION['totalMonths'] = $totalMonths;
-        $_SESSION['totalDays'] = $totalDays;
+        // Store the date strings and the date difference in the session
+        $_SESSION['dates'][] = array('date1' => $date1String, 'date2' => $date2String, 'difference' => $result);
+
     } else {
-        $message = "Invalid date format. Please enter dates in the format 'YYYY-MM-DD'.";
+        $message = "Invalid date format. Please enter dates in the format 'DD-MM-YYYY'.";
     }
+
 }
 
+// Function to calculate the difference between two dates
 function dateDifference($date1, $date2) {
     $datetime1 = new DateTime($date1);
     $datetime2 = new DateTime($date2);
+   
     $interval = $datetime1->diff($datetime2);
-    return sprintf('%d years, %d months, %d days', $interval->y, $interval->m, $interval->d);
 
+    return sprintf('%d years, %d months, %d days', $interval->y, $interval->m, $interval->d);
 }
+
 ?>
 
 
