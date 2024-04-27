@@ -23,14 +23,6 @@ body {
     font-weight: bold;
 }
 
-.date-difference {
-    color: #00ffff; /* Change this to your preferred color */
-}
-
-.total-difference {
-    color: #ffffff; /* Change this to your preferred color */
-}
-
 .container {
     display: flex;
     flex-direction: row;
@@ -38,7 +30,7 @@ body {
 
 .section {
     flex: 1;
-    padding: 20px;
+    padding: 20px; /*Distancia del formulario al grid de*/
     display: flex;
     flex-direction: column;
     justify-content: left;
@@ -85,26 +77,45 @@ input[name="reset"] {
     margin-top: 5px;
 }
 
-.flex-container {
-    display: flex;
-    flex-direction: column;
-}
-
 input[type="date"]:focus {
     background-color: yellow;
 }
 
-#results-display {
-    
-    width: 100%; /* Adjust this value as needed */
-    /* Your existing CSS properties */
+.header-row, .result-row {
+    display: flex;
 }
 
-.result-row {
+.centered-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    width: 40%; /* Adjust this value as needed */
-    color: 00FFFF;
-    text-
+}
+
+.container section, .grid-container {
+    width: 80%; /* Adjust this value to your liking */
+    margin: 0 auto;
+    padding: 0% 0%;
+}
+
+.header-row, .result-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+   
+}
+
+.grid-container, .header-row, .result-row {
+    padding: 0px 0px; /* 10px top/bottom padding, 20px left/right padding */
+    margin: 0px 0px; /* 10px top/bottom margin, 0px left/right margin */
+}
+
+.column {
+    border: 1px solid black;
+    padding: 0px;
+    text-align: center;    
+}
+
+.centered-column {/* Contenido centrado de cada celda*/
+    display: flex;
+    justify-content: center;
+    align-items: center;  
 }

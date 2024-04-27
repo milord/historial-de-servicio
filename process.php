@@ -6,6 +6,10 @@ require 'vendor/autoload.php';
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 
+$grandTotalYears = 0;
+$grandTotalMonths = 0;
+$grandTotalDays = 0;
+
 $message = '';
 $dates = isset($_SESSION['dates']) ? $_SESSION['dates'] : array();
 $totalYears = isset($_SESSION['totalYears']) ? $_SESSION['totalYears'] : 0;

@@ -5,13 +5,19 @@ function validateForm() {
         alert("Favor de llenar ambos campos en formato 'dd-mm-aaaa'.");
         return false;
     }
+
+    if (date1 === date2) {
+        alert('The two dates cannot be the same.');
+        return false;
+    }
 }
 
 function resetForm() {
     document.getElementById('date1').value = '';
     document.getElementById('date2').value = '';
-    document.getElementById('total-difference').innerHTML = 'Cómputo: ';
-    document.getElementById('results-display').innerHTML = '';
+    document.querySelectorAll('.result-row').forEach(function(element) {
+        element.innerHTML = '';
+    });
 }
 
 

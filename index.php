@@ -32,52 +32,86 @@ Carbon::setLocale('es');
             <input type="submit" value="Calcular">
             <input type="button" value="Reiniciar" onclick="resetForm()">
         </form>
-
-        <?php
-        // Display the total sum of date differences
+        Cómputo:
         
-        $interval = CarbonInterval::create(0, $totalYears, $totalMonths, $totalDays);
-        
-        echo sprintf("<span id='total-difference' class='total-difference'>Cómputo: %s</span>", $interval->forHumans(['parts' => 3]));
-
-        ?>
     </div>
 
     <!-- Display the date difference -->
-    <div id="results-display" class="section">
+    <div class="grid-container">
+
+        <!-- Add a header row here -->
+        <div class="header-row">
+            <div class="column"></div>
+            <div class="column centered-column">Inicio</div>
+            <div class="column centered-column">Término</div>
+            <div class="column centered-column">Cómputo</div>
+            <div class="column"></div>
+        </div>
+
+        <div class="header-row">
+            <div class="column"></div>
+            <div class="column centered-column">dd/mm/aaaa</div>
+            <div class="column centered-column">dd/mm/aaaa</div>
+            <div class="column centered-column">AA/MM/DD</div>
+            <div class="column"></div>
+        </div>
+
+
         <?php if (isset($_SESSION['dates'])): ?>
             <?php foreach ($_SESSION['dates'] as $index => $date): ?>
+                
                 <div class="result-row">
-                    <div class="column"><?php echo ($index + 1) . '.-'; ?></div>
-                    <div class="column">
-                        <?php 
+                    
+                    <div class="column centered-column"><?php echo ($index + 1) . '.-'; ?></div>
+                    <div class="column centered-column">
+                        <?php
+                            // Parse the date string and format it as "dd/mm/yyyy" 
                             $date1 = Carbon::parse($date['date1']);
                             echo $date1->format('d/m/Y'); 
-                        ?> 
-                        and 
-                        <?php 
+                        ?>
+                    </div> 
+                    <div class="column centered-column">
+                        <?php
+                            // Parse the date string and format it as "dd/mm/yyyy"
                             $date2 = Carbon::parse($date['date2']);
                             echo $date2->format('d/m/Y'); 
-                        ?>:
+                        ?>
                     </div>
-                    <div class="column">
+                    <div class="column centered-column">
                         <?php 
+                            // Calculate the difference between the two dates
                             $totalYears = $date1->diff($date2)->y;
                             $totalMonths = $date1->diff($date2)->m;
                             $totalDays = $date1->diff($date2)->d;
-                            $interval = CarbonInterval::create(0, $totalYears, $totalMonths, $totalDays);
-                            if ($totalYears == 0 && $totalMonths == 0 && $totalDays == 0) {
-                                echo "<span id='total-years' class='total-years'>0A/</span>";
-                                echo "<span id='total-months' class='total-months'>0M/</span>";
-                                echo "<span id='total-days' class='total-days'>00D/</span>";
-                            } else {
-                                echo sprintf("<span id='total-years' class='total-years'>%sA/</span>", $totalYears);
-                                echo sprintf("<span id='total-months' class='total-months'>%sM/</span>", $totalMonths);
-                                echo sprintf("<span id='total-days' class='total-days'>%02dD/</span>", $totalDays);
+
+                            // Convert days to months
+                            $totalMonths += floor($totalDays / 30);
+                            $totalDays %= 30;
+
+                            // Convert months to years
+                            $totalYears += floor($totalMonths / 12);
+                            $totalMonths %= 12;
+
+                            
+
+                            // Format the interval as "X years, Y months, Z days"
+                            echo sprintf("<span id='total-years' class='total-years'>%sA/</span>", $totalYears);
+                            echo sprintf("<span id='total-months' class='total-months'>%sM/</span>", $totalMonths);
+                            echo sprintf("<span id='total-days' class='total-days'>%02dD/</span>", $totalDays);
+
+                            // Add the years, months, and days to the grand total
+                            $grandTotalYears += $totalYears;
+                            $grandTotalMonths += $totalMonths;
+                            $grandTotalDays += $totalDays;
+
+                            // Display a warning if the grand total of years exceeds 28
+                            if ($grandTotalYears > 28) {
+                                echo "<script type='text/javascript'>alert('Warning: The grand total of years exceeds 28.');</script>";
                             }
+
                         ?>
                     </div>
-                    <div class="column">
+                    <div class="column centered-column">
                         <!-- Delete button -->
                         <form action="process.php" method="post" style="display: inline;">
                             <input type="hidden" name="delete_index" value="<?php echo $index; ?>">
@@ -88,6 +122,13 @@ Carbon::setLocale('es');
                 
             <?php endforeach; ?>
         <?php endif; ?>
+        <!--  Display the grand total -->
+        <?php
+            echo sprintf("<span id='grand-total-years' class='grand-total-years'>%sA/</span>", $grandTotalYears);
+            echo sprintf("<span id='grand-total-months' class='grand-total-months'>%sM/</span>", $grandTotalMonths);
+            echo sprintf("<span id='grand-total-days' class='grand-total-days'>%02dD/</span>", $grandTotalDays);
+        ?>
+
     </div>
 </div>
 
