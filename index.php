@@ -32,7 +32,6 @@ Carbon::setLocale('es');
             <input type="submit" value="Calcular">
             <input type="button" value="Reiniciar" onclick="resetForm()">
         </form>
-        Cómputo:
         
     </div>
 
@@ -122,12 +121,45 @@ Carbon::setLocale('es');
                 
             <?php endforeach; ?>
         <?php endif; ?>
-        <!--  Display the grand total -->
-        <?php
-            echo sprintf("<span id='grand-total-years' class='grand-total-years'>%sA/</span>", $grandTotalYears);
-            echo sprintf("<span id='grand-total-months' class='grand-total-months'>%sM/</span>", $grandTotalMonths);
-            echo sprintf("<span id='grand-total-days' class='grand-total-days'>%02dD/</span>", $grandTotalDays);
-        ?>
+        Cómputo:
+        <div class="compute-row">
+            <p>
+                <!--  Display the grand total -->
+                <?php
+                    echo sprintf("<span id='grand-total-years' class='grand-total-years'>%sA/</span>", $grandTotalYears);
+                    echo sprintf("<span id='grand-total-months' class='grand-total-months'>%sM/</span>", $grandTotalMonths);
+                    echo sprintf("<span id='grand-total-days' class='grand-total-days'>%02dD/</span>", $grandTotalDays);
+                ?>
+            </p>
+            
+        </div>
+
+        <p> 
+                <?php
+                // Convert excess days to months
+                $excessMonths = floor($grandTotalDays / 30);
+                $grandTotalMonths += $excessMonths;
+                $grandTotalDays %= 30;
+
+                // Convert excess months to years
+                $excessYears = floor($grandTotalMonths / 12);
+                $grandTotalYears += $excessYears;
+                $grandTotalMonths %= 12;
+
+                // Create a CarbonInterval instance
+                $interval = CarbonInterval::years($grandTotalYears)
+                ->months($grandTotalMonths)
+                ->days($grandTotalDays);
+
+                // Format the interval as "X years, Y months, Z days"
+                $formattedInterval = $interval->forHumans([
+                    'parts' => 3,
+                    'join' => '/',
+                    'short' => true]);
+
+                echo sprintf("<span id='grand-total-interval' class='grand-total-interval'>%s</span>", $formattedInterval);
+                ?>
+            </p>
 
     </div>
 </div>

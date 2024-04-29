@@ -13,11 +13,15 @@ function validateForm() {
 }
 
 function resetForm() {
-    document.getElementById('date1').value = '';
-    document.getElementById('date2').value = '';
-    document.querySelectorAll('.result-row').forEach(function(element) {
-        element.innerHTML = '';
-    });
+    // Display a confirmation dialog
+    if (confirm('¿Está seguro de querer eliminar toda la información en pantalla?')) {
+        // If the user clicked "OK", clear the form fields and results
+        document.getElementById('date1').value = '';
+        document.getElementById('date2').value = '';
+        document.querySelectorAll('.result-row').forEach(function(element) {
+            element.innerHTML = '';
+        });
+    }
 }
 
 

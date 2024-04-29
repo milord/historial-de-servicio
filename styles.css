@@ -119,3 +119,9 @@ input[type="date"]:focus {
     justify-content: center;
     align-items: center;  
 }
+
+.compute-row {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
